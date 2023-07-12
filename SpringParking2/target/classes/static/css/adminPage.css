@@ -1,0 +1,129 @@
+table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: auto;
+  }
+  
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+h1 {
+    text-align: center;
+}
+
+h3 {
+  margin-left: 15pt;
+}
+
+
+.btns {
+    align-items: center;
+}
+
+.btn {
+    background-color: #4CAF50; 
+    border: none; 
+    color: white; 
+    padding: 10px 20px;  /*Spaziatura interna */
+    text-align: center; 
+    align-items: center ;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    /*transition-duration: 0.4s;  Durata dell'effetto di transizione */
+    cursor: pointer;
+    margin: 20px;
+}
+
+.btn:hover {
+background-color: #45a049;
+}
+
+
+.btns-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.btnDel {
+    background-color: #eb1111; 
+    border: none; 
+    color: white;
+    font-size: 12px; 
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+.btnMod {
+  background-color: #ebd211; 
+  border: none; 
+  color: white;
+  font-size: 12px; 
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+#addParkingForm {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#addParkingForm input[type="text"],
+#addParkingForm input[type="number"],
+#addParkingForm select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+}
+
+
+#addParkingForm button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 3px;
+  background-color: #4CAF50;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#addParkingForm button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+
+.btnLogout {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4267B2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btnLogout:hover {
+  background-color: #39579A;
+}

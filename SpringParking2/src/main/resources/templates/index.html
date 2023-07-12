@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <title>User</title>
+  
+  <script>
+
+    function fetchParkings() {
+      fetch('/user/api/parkings')
+      .then(response => response.json())
+      .then(data => {
+        // rimuovo tutte le righe esistenti
+        const tableBody = document.getElementById("parkingTableBody");
+        tableBody.innerHTML = "";
+        // riga per ogni parcheggio
+        data.forEach(parcheggio => {
+          const newRow = tableBody.insertRow();
+
+          const cellIdParcheggio = newRow.insertCell();
+          cellIdParcheggio.textContent = parcheggio.idParcheggio;
+          var idP = parcheggio.idParcheggio;
+
+          const cellNomeParcheggio = newRow.insertCell();
+          cellNomeParcheggio.textContent = parcheggio.nomeParcheggio;
+
+          const cellPostiTot = newRow.insertCell();
+          cellPostiTot.textContent = parseInt(parcheggio.postiTotali);
+
+          const cellPostiDisponibili = newRow.insertCell();
+          cellPostiDisponibili.textContent = parseInt(parcheggio.postiDisponibili);
+
+          const cellAperto = newRow.insertCell();
+          var statoParc = ""
+          if(parcheggio.isOpen==1) {
+            statoParc="APERTO";
+          } 
+          else {
+            statoParc="CHIUSO";
+          }
+          cellAperto.textContent = statoParc;
+
+          const cellPaga = newRow.insertCell();
+          const btnPaga = document.createElement('button');
+          btnPaga.textContent = 'PAGA';
+          btnPaga.classList.add('btnPaga');
+          btnPaga.onclick = function() {
+            pagamento(parcheggio.idParcheggio);
+          };
+          if(statoParc == "APERTO")
+            cellPaga.appendChild(btnPaga);
+
+          const cellAzioni = newRow.insertCell();
+
+          const btnEntra = document.createElement('button');
+          btnEntra.textContent = 'ENTRA';
+          btnEntra.classList.add('btnEntra');
+          btnEntra.onclick = function() {
+            accessoParcheggio(parcheggio.idParcheggio);
+          };
+          if(statoParc == "APERTO")
+            cellAzioni.appendChild(btnEntra);
+
+          const btnEsci = document.createElement('button');
+          btnEsci.textContent = 'ESCI';
+          btnEsci.classList.add('btnEsci');
+          btnEsci.onclick = function() {
+            uscitaParcheggio(parcheggio.idParcheggio);
+          };
+          if(statoParc == "APERTO")
+            cellAzioni.appendChild(btnEsci);
+        });
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    }
+    fetchParkings();
+
+
+
+    function accessoParcheggio(idParcheggio) {
+      fetch('/user/api/parkings/accesso/' + idParcheggio, {
+        method: 'PUT'
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("Benvenuto nel parcheggio "+idParcheggio);
+          location.reload(); 
+        } 
+        else {
+          throw new Error('Errore durante l\'accesso al parcheggio.');
+        }
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    }
+  
+
+    function pagamento(idParcheggio) {
+      fetch('/user/api/parkings/pagamento/' + idParcheggio, {
+        method: 'POST'
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("Pagamento del ticket avvenuto, uscita consentita.")
+          location.reload(); 
+        } 
+        else {
+          throw new Error('Errore durante il pagamento del parcheggio.');
+        }
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    }
+
+
+    function uscitaParcheggio(idParcheggio) {
+      fetch('/user/api/parkings/uscita/' + idParcheggio, {
+        method: 'PUT'
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("Uscita dal parcheggio "+idParcheggio+" avvenuta con successo.")
+          console.log('Uscita utente!');
+          location.reload(); 
+        } 
+        else {
+          throw new Error('Errore durante l\'uscita al parcheggio.');
+        }
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    }
+
+
+  </script>
+</head>
+<body>
+  <div>
+    <a href="/admin" class="btnAdmin">Vai alla pagina Admin</a>
+  </div>
+  <h1>User</h1>
+  <table >
+    <thead>
+      <tr>
+        <th>ID Parcheggio</th>
+        <th>Nome Parcheggio</th>
+        <th>Posti Totali</th>
+        <th>Posti disponibili</th>
+        <th>Stato</th>
+        <th>Pagamento</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody id="parkingTableBody">
+      <!-- Righe dei parcheggi saranno generate dinamicamente qui -->
+      
+    </tbody>
+  </table>
+
+</body>
+</html>

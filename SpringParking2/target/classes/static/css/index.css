@@ -1,0 +1,65 @@
+table {
+  border-collapse: collapse;
+  width: 90%;
+  margin:auto;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+h1 {
+  text-align: center;
+}
+
+.btnAdmin {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f2f2f2;
+  color: #333;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: end;
+}
+
+
+.btnPaga {
+  background-color: #000000; 
+  border: none; 
+  color: white;
+  font-size: 12px; 
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btnEsci {
+  background-color: #eb1111; 
+  border: none; 
+  color: white;
+  font-size: 12px; 
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+
+.btnEntra {
+background-color: #2dba0e; 
+border: none; 
+color: white;
+font-size: 12px; 
+border-radius: 4px;
+cursor: pointer;
+}

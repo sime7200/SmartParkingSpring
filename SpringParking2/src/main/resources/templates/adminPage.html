@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="css/adminPage.css">
+  <title>Admin</title>
+
+  <script>   
+
+
+
+    window.addEventListener('DOMContentLoaded', function() {
+      var nameElement = document.getElementById('nameElement');
+      if (nameElement.textContent == "null") {
+        window.location.href = '/login';
+      }
+    });
+
+
+    
+    function addParking(event) {
+      event.preventDefault();
+      var nomeParcheggio = document.querySelector('input[name="nomeParcheggio"]').value;
+      var postiTotali = parseInt(document.querySelector('input[name="postiTotali"]').value);
+      var postiDisponibili = parseInt(document.querySelector('input[name="postiDisponibili"]').value);
+      var isOpen = document.querySelector('select[name="isOpen"]').value;
+
+      if (postiTotali <= postiDisponibili) {
+        alert("Il numero di posti totali deve essere maggiore del numero di posti disponibili.");
+        return; 
+      }
+
+      var newParking = {
+          nomeParcheggio: nomeParcheggio,
+          postiTotali: postiTotali,
+          postiDisponibili: postiDisponibili,
+          isOpen: isOpen
+      };
+      fetch('/admin/api/parkings', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newParking)
+      })
+      .then(response => {
+          if (response.ok) {
+            console.log('Parcheggio aggiunto con successo!');
+                document.getElementById("addParkingForm").reset();
+            location.reload(); 
+
+          } else {
+              throw new Error('Errore durante l\'aggiunta del parcheggio.');
+          }
+      })
+    }
+    
+
+
+    function fetchParkings() {
+      fetch('/admin/api/parkings')
+      .then(response => response.json())
+      .then(data => {
+        // rimuovo tutte le righe esistenti
+        const tableBody = document.getElementById("parkingTableBody");
+        tableBody.innerHTML = "";
+        // riga per ogni parcheggio
+        data.forEach(parcheggio => {
+          const newRow = tableBody.insertRow();
+
+          const cellIdParcheggio = newRow.insertCell();
+          cellIdParcheggio.textContent = parcheggio.idParcheggio;
+          var idP = parcheggio.idParcheggio;
+
+          const cellNomeParcheggio = newRow.insertCell();
+          cellNomeParcheggio.textContent = parcheggio.nomeParcheggio;
+
+          const cellPostiTot = newRow.insertCell();
+          cellPostiTot.textContent = parseInt(parcheggio.postiTotali);
+
+          const cellPostiDisponibili = newRow.insertCell();
+          cellPostiDisponibili.textContent = parseInt(parcheggio.postiDisponibili);
+
+          const cellAperto = newRow.insertCell();
+          var statoParc = ""
+          if(parcheggio.isOpen==1) {
+            statoParc="APERTO";
+          } 
+          else {
+            statoParc="CHIUSO";
+          }
+          cellAperto.textContent = statoParc;
+
+          const cellRimuovi = newRow.insertCell();
+          const btnDel = document.createElement('button');
+          btnDel.textContent = 'RIMUOVI';
+          btnDel.classList.add('btnDel');
+          btnDel.onclick = function() {
+            deleteParking(parcheggio.idParcheggio);
+          };
+          cellRimuovi.appendChild(btnDel);
+
+          const cellModifica = newRow.insertCell();
+          const btnMod = document.createElement('button');
+          btnMod.textContent = 'ATTIVA/DISATTIVA';
+          btnMod.classList.add('btnMod');
+          btnMod.onclick = function() {
+            updateParking(parcheggio.idParcheggio);
+          }
+          cellModifica.appendChild(btnMod);
+        });
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    }
+    fetchParkings();
+
+
+
+    function deleteParking(idParcheggio) {
+      fetch('/admin/api/parkings/' + idParcheggio, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Parcheggio eliminato con successo!');
+          location.reload(); 
+        } else {
+          throw new Error('Errore durante l\'eliminazione del parcheggio.');
+        }
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    }
+    
+    
+    
+
+    
+    function updateParking(idParcheggio) {
+      fetch('/admin/api/parkings/' + idParcheggio, {
+        method: 'PUT',
+        headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log('Parcheggio modificato con successo!');
+          location.reload(); 
+        } 
+        else {
+          throw new Error('Errore durante la modifica del parcheggio.');
+        }
+      })
+      .catch(error => {
+        console.error('Errore durante la richiesta:', error);
+      });
+    } 
+
+    
+    window.fbAsyncInit = function() {
+    FB.init({
+      appId: '3458840611050196',
+      cookie: true,
+      xfbml: true,
+      version: 'v13.0'
+      });
+    };
+
+
+    function logout() {
+      window.location.replace('/');
+    }  
+
+
+  </script>
+</head>
+
+<body>
+
+  <div id="nameElement"></div>
+  <button class="btnLogout" onclick="logout()">Logout</button>
+  
+
+    <script th:inline="javascript">
+        var name = /*[[${name}]]*/ '';
+        document.getElementById('nameElement').innerText = name;
+        var adminHeading = document.getElementById('admin');
+        adminHeading.insertAdjacentHTML('afterend', ' - ' + name);
+
+    </script>
+  <h1 id="admin">Admin</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID Parcheggio</th>
+        <th>Nome Parcheggio</th>
+        <th>Posti Totali</th>
+        <th>Posti disponibili</th>
+        <th>Stato</th>
+        <th>Rimuovi</th>
+        <th>Modifica</th>
+      </tr>
+    </thead>
+    <tbody id="parkingTableBody">
+      <!-- Righe dei parcheggi dinamiche -->
+      
+    </tbody>
+  </table>
+  <h3>Aggiungi parcheggio</h3>
+  <form id="addParkingForm" onsubmit="addParking(event)">
+    <input type="text" name="nomeParcheggio" placeholder="Nome Parcheggio" required>
+    <input type="number" name="postiTotali" placeholder="Posti Totali" min="0" required>
+    <input type="number" name="postiDisponibili" placeholder="Posti disponibili" min="0" required>
+    <select id="isOpen" name="isOpen" required>
+      <option value="APERTO">APERTO</option>
+      <option value="CHIUSO">CHIUSO</option>
+    </select>    
+    <input type="hidden" id="newParkingId">
+    <button type="submit" class="btn-salva">Salva</button>
+  </form>
+
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+</body>
+</html>
