@@ -50,7 +50,7 @@ The system is based on a **distributed architecture** with these main components
 - Admin access is protected and requires Facebook login.
 - The web interface is served over HTTPS on port 8443.
 
-###📡 MQTT Communication
+### 📡 MQTT Communication
 - Each simulated IoT device is implemented as a Java thread that sends a message to the correct MQTT topic using a dedicated or shared client.
 - All MQTT messages are published securely with TLS using Mosquitto's public cloud broker.
 1. Entry → parking/{id}/entrata
